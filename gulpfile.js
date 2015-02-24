@@ -11,6 +11,8 @@ $ = require('gulp-load-plugins')({
     }
 });
 
+require('colors');
+
 /** Config variables **/
 var path = require('path'),
     tmpDir = './.tmp',
@@ -72,7 +74,7 @@ gulp.task('open',function(cb){
 
 gulp.task('watch', function (cb) {
     gulp.watch([expressSrc + '/**/*.*'], notifyLiveReload);
-    //gulp.watch([appDir + '/js/**'], ['js', 'html']);
+    gulp.watch([appDir + '/js/**'], ['js', 'html']);
     //gulp.watch([appDir + '/tpl/**'], ['tpl']);
     cb();
 });

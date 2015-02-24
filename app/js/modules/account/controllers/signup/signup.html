@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-wrap">
-                    <h1>Log in with your email account</h1>
+                    <h1>Sign up with your email account</h1>
                     <form role="form" action="javascript:;" method="post" id="login-form" autocomplete="off">
                         <div class="form-group">
                             <label for="email" class="sr-only">Email</label>
@@ -13,13 +13,17 @@
                             <label for="key" class="sr-only">Password</label>
                             <input type="password" name="key" id="key" class="form-control" placeholder="Password">
                         </div>
+                        <div class="form-group">
+                            <label for="key" class="sr-only">Password</label>
+                            <input type="password" name="key" id="key" class="form-control" placeholder="Comfirm password">
+                        </div>
                         <div class="checkbox">
                             <span class="character-checkbox" ng-click="showPassword()"></span>
                             <span class="label">Show password</span>
                         </div>
-                        <input ng-click="login()" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Log in">
+                        <input ng-click="signup()" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Sign up">
                     </form>
-                    <a href="javascript:;" class="forget" data-toggle="modal" data-target=".forget-modal">Forgot your password?</a>
+                    <a href="" ui-sref="access.signin" class="forget" data-toggle="modal" data-target=".forget-modal">Do you have an account?</a>
                     <hr>
                 </div>
             </div> <!-- /.col-xs-12 -->
@@ -53,7 +57,8 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <p>Page © - 2015</p>
+                <copyright></copyright>
+
             </div>
         </div>
     </div>

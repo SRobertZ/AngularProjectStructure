@@ -33,5 +33,8 @@
     "opn": "^1.0.1",
     "run-sequence": "^1.0.2",
     "tiny-lr": "^0.1.5"
+  },
+  "dependencies": {
+    "colors": "^1.0.3"
   }
 }

@@ -2,7 +2,7 @@
  * Created by rsabiryanov on 19.02.2015.
  */
 (function (module, $) {
-    module.controller('SigninController', ['$scope', function ($scope) {
+    module.controller('SigninController', ['$scope','accountService','$state', function ($scope, accountService,$state) {
         $scope.showPassword = function () {
             var key_attr = $('#key').attr('type');
             if (key_attr != 'text') {
@@ -14,7 +14,9 @@
             }
         };
         $scope.login= function(){
-
+            accountService.login().then(function(){
+                $state.go('main.list');
+            });
         };
     }]);
 })(angular.module('app'), $);
