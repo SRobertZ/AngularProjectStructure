@@ -8,6 +8,7 @@ Practice for Angular App Structure
 - 'npm install -g bower'
 - 'npm install'
 - 'bower install'
+
 ##Build
 
 Run 'gulp build'
