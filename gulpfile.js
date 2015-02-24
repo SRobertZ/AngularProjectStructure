@@ -173,5 +173,5 @@ gulp.task('bower_components', function(){
 
 gulp.task('build', function (cb) {
     //runSequence('clean', ['scripts', 'less', 'static'], 'html', 'rev', 'afterBuild', cb);
-    runSequence('clean',['scripts','static'],'html','rev','bower_components', cb);
+    runSequence('clean',['scripts','static'],'html','bower_components', cb);
 });

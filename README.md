@@ -3,7 +3,7 @@ Practice for Angular App Structure
 
 #Setup
 - `git clone git@github.com:SRobertZ/AngularProjectStructure.git`
-- `cd manualBooks`
+- `cd AngularProjectStructure`
 - `npm install -g gulp`
 - `npm install -g bower`
 - `npm install`
