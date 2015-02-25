@@ -3,6 +3,7 @@
  */
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
+var yuidoc = require("gulp-yuidoc");
 
 $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files'],
@@ -169,6 +170,13 @@ gulp.task('rev', function () {
 gulp.task('bower_components', function(){
     return gulp.src([appDir + '/bower_components/**/*.*'])
         .pipe(gulp.dest(destDir+'/bower_components/'))
+});
+
+gulp.task('yuidoc', function(){
+   return gulp.src([appDir +"/js/**/*.js"])
+        .pipe(yuidoc.parser())
+        .pipe(yuidoc.generator())
+        .pipe(gulp.dest('./documentation-output'))
 });
 
 gulp.task('build', function (cb) {

@@ -15,3 +15,8 @@ Run `gulp build`
 
 ##For developer
 Run `gulp serve`
+
+##Generate documentation
+Run `gulp yuidoc`
+
+Documentation will generato to  documentation-output folder
