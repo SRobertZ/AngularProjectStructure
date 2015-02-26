@@ -2,7 +2,7 @@
     module.directive('myfooter', function () {
         return {
             restrict: 'E',
-            templateUrl: 'js/shared/directives/footer.html',
+            templateUrl: 'js/shared/directives/myfooter.html',
             scope:{},
             controller: ['$scope', function ($scope) {
                 $scope.footerText = function () {
@@ -11,4 +11,4 @@
             }]
         }
     })
-})(angular.module('app'));
+})(angular.module('shared'));

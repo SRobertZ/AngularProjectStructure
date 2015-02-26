@@ -6,21 +6,19 @@
  * @module account
  * @class account.accountBackEnd
  */
-(function (module) {
-    module.factory('accountBackEnd', ['$q', function ($q) {
-        var service = {};
+angular.module('account').factory('accountBackEnd', ['$q', function ($q) {
+    var service = {};
 
-        /**
-         * Аутентификация пользователя
-         *
-         * @method login
-         * @return {promise} Результат аунтефикации
-         */
-        service.login = function () {
-            var defer = $q.defer();
-            defer.resolve(true);
-            return defer.promise;
-        };
-        return service;
-    }]);
-})(angular.module('app'));
+    /**
+     * Аутентификация пользователя
+     *
+     * @method login
+     * @return {promise} Результат аунтефикации
+     */
+    service.login = function () {
+        var defer = $q.defer();
+        defer.resolve(true);
+        return defer.promise;
+    };
+    return service;
+}]);

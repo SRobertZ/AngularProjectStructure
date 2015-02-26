@@ -6,13 +6,18 @@
  * @module account
  * @class account.accountService
  */
-(function (module) {
-    module.factory('accountService', ['accountBackEnd', function (accountBackEnd) {
-        var service = {};
+angular.module('account').factory('accountService', ['accountBackEnd', function (accountBackEnd) {
+    var service = {};
 
-        service.login = function () {
-            return accountBackEnd.login();
-        };
-        return service;
-    }]);
-})(angular.module('app'));
+    /**
+     * Аутентификация пользователя
+     *
+     * @method login
+     * @return {promise} Результат аунтефикации
+     */
+    service.login = function () {
+        return accountBackEnd.login();
+    };
+
+    return service;
+}]);

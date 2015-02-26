@@ -76,6 +76,7 @@ gulp.task('open',function(cb){
 gulp.task('watch', function (cb) {
     gulp.watch([expressSrc + '/**/*.*'], notifyLiveReload);
     gulp.watch([appDir + '/js/**'], ['js', 'html']);
+    gulp.watch([appDir + '/index.html'], ['js', 'html']);
     //gulp.watch([appDir + '/tpl/**'], ['tpl']);
     cb();
 });

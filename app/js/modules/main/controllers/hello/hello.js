@@ -5,4 +5,4 @@
     module.controller('HelloController', ['$scope', function ($scope) {
         $scope.Text = "Hello, man!";
     }]);
-})(angular.module('app'));
+})(angular.module('main'));

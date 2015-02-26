@@ -3,5 +3,5 @@
  */
 angular.module('app', [
     'ngRoute',
-    'ui.router'
+    'ui.router', 'account'
 ])

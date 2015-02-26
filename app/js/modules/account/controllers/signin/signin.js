@@ -25,4 +25,4 @@
             });
         };
     }]);
-})(angular.module('app'), $);
+})(angular.module('account'), $);
