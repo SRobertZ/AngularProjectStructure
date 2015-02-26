@@ -20,3 +20,5 @@ Run `gulp serve`
 Run `gulp yuidoc`
 
 Documentation will generate to  documentation-output folder
+
+Please see [YUIDoc Syntax Reference](http://yui.github.io/yuidoc/)
