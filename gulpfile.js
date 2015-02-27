@@ -4,6 +4,9 @@
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var yuidoc = require("gulp-yuidoc");
+var angularFilesort = require('gulp-angular-filesort'),
+    inject = require('gulp-inject');
+
 
 $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files'],
@@ -180,7 +183,18 @@ gulp.task('yuidoc', function(){
         .pipe(gulp.dest('./documentation-output'))
 });
 
+gulp.task('sort', function(){
+   return gulp.src([destDir+ '/index.html'])
+        .pipe(inject(
+            gulp.src([destDir+'/js/**/*.js']).pipe(angularFilesort()),
+           {
+               ignorePath: 'dist'
+           }
+        ))
+        .pipe(gulp.dest('./dist'));
+});
+
 gulp.task('build', function (cb) {
     //runSequence('clean', ['scripts', 'less', 'static'], 'html', 'rev', 'afterBuild', cb);
-    runSequence('clean',['scripts','static'],'html','bower_components', cb);
+    runSequence('clean',['scripts','static'],'html','bower_components','sort', cb);
 });
