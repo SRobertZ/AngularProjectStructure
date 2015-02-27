@@ -78,8 +78,8 @@ gulp.task('open',function(cb){
 
 gulp.task('watch', function (cb) {
     gulp.watch([expressSrc + '/**/*.*'], notifyLiveReload);
-    gulp.watch([appDir + '/js/**'], ['js', 'html']);
-    gulp.watch([appDir + '/index.html'], ['js', 'html']);
+    gulp.watch([appDir + '/js/**'], ['js', 'html','inject']);
+    gulp.watch([appDir + '/index.html'], ['js', 'html','inject']);
     //gulp.watch([appDir + '/tpl/**'], ['tpl']);
     cb();
 });
@@ -183,7 +183,7 @@ gulp.task('yuidoc', function(){
         .pipe(gulp.dest('./documentation-output'))
 });
 
-gulp.task('sort', function(){
+gulp.task('inject',['html'], function(){
    return gulp.src([destDir+ '/index.html'])
         .pipe(inject(
             gulp.src([destDir+'/js/**/*.js']).pipe(angularFilesort()),
@@ -196,5 +196,5 @@ gulp.task('sort', function(){
 
 gulp.task('build', function (cb) {
     //runSequence('clean', ['scripts', 'less', 'static'], 'html', 'rev', 'afterBuild', cb);
-    runSequence('clean',['scripts','static'],'html','bower_components','sort', cb);
+    runSequence('clean',['scripts','static'],'html','bower_components','inject', cb);
 });
