@@ -5,8 +5,8 @@ var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var yuidoc = require("gulp-yuidoc");
 var angularFilesort = require('gulp-angular-filesort'),
-    inject = require('gulp-inject');
-
+    inject = require('gulp-inject'),
+    bowerFiles = require('main-bower-files');
 
 $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files'],
@@ -23,14 +23,13 @@ var path = require('path'),
     destDir = './dist',
     appDir = './app',
     bowerDir = appDir + '/bower_components';
-    expressSrc = path.join(__dirname, destDir),
+expressSrc = path.join(__dirname, destDir),
     port = 9009,
     lrPort = 4009,
 
 // Allows gulp <target> --dev to be run for a non-minified output
     isDev = true;// $.util.env.dev === true,
-    isProduction = !isDev;
-
+isProduction = !isDev;
 
 
 function log(error) {
@@ -69,17 +68,17 @@ gulp.task('livereload', function (cb) {
     cb();
 });
 
-gulp.task('open',function(cb){
+gulp.task('open', function (cb) {
     var url = 'http://localhost:' + port + '/';
-    console.log('Open ' +url.bold.green);
+    console.log('Open ' + url.bold.green);
     require('opn')(url);
     cb();
 });
 
 gulp.task('watch', function (cb) {
     gulp.watch([expressSrc + '/**/*.*'], notifyLiveReload);
-    gulp.watch([appDir + '/js/**'], ['js', 'html','inject']);
-    gulp.watch([appDir + '/index.html'], ['js', 'html','inject']);
+    gulp.watch([appDir + '/js/**'], ['js', 'html', 'inject']);
+    gulp.watch([appDir + '/index.html'], ['js', 'html', 'inject']);
     //gulp.watch([appDir + '/tpl/**'], ['tpl']);
     cb();
 });
@@ -98,7 +97,7 @@ function notifyLiveReload(event) {
 gulp.task('serve', function () {
     isDev = true;
     isProduction = false;
-    runSequence('build',['express', 'livereload'],['watch', 'open']);
+    runSequence('build', ['express', 'livereload'], ['watch', 'open']);
 });
 /**********************/
 
@@ -113,22 +112,22 @@ gulp.task('afterBuild', function () {
     $.util.log('----------------'.green);
 });
 
-gulp.task('js', function(){
+gulp.task('js', function () {
     return gulp.src([appDir + '/js/**/*.*'])
-        .pipe(gulp.dest(destDir+'/js/'))
+        .pipe(gulp.dest(destDir + '/js/'))
 });
 
 gulp.task('scripts', function (cb) {
     return runSequence('js', cb);
 });
 
-gulp.task('css', function(){
+gulp.task('css', function () {
     return gulp.src([appDir + '/css/*.css'])
-        .pipe(gulp.dest(destDir+'/css/'))
+        .pipe(gulp.dest(destDir + '/css/'))
 });
-gulp.task('img', function(){
+gulp.task('img', function () {
     return gulp.src([appDir + '/img/**/*.*'])
-        .pipe(gulp.dest(destDir+'/img/'))
+        .pipe(gulp.dest(destDir + '/img/'))
 });
 gulp.task('static', ['css', 'img']);
 
@@ -171,30 +170,40 @@ gulp.task('rev', function () {
         .pipe(gulp.dest(destDir));
 });
 
-gulp.task('bower_components', function(){
+gulp.task('bower_components', function () {
     return gulp.src([appDir + '/bower_components/**/*.*'])
-        .pipe(gulp.dest(destDir+'/bower_components/'))
+        .pipe(gulp.dest(destDir + '/bower_components/'))
 });
 
-gulp.task('yuidoc', function(){
-   return gulp.src([appDir +"/js/**/*.js"])
+gulp.task('yuidoc', function () {
+    return gulp.src([appDir + "/js/**/*.js"])
         .pipe(yuidoc.parser())
         .pipe(yuidoc.generator())
         .pipe(gulp.dest('./documentation-output'))
 });
 
-gulp.task('inject',['html'], function(){
-   return gulp.src([destDir+ '/index.html'])
+gulp.task('inject', ['html'], function () {
+    return gulp.src([destDir + '/index.html'])
+        .pipe(inject(gulp.src(bowerFiles({
+                bowerDirectory: destDir,
+                bowerJson: './bower.json'
+            }), {
+                read: false
+            }
+        ), {
+            ignorePath: 'app',
+            name: 'bower'
+        }))
         .pipe(inject(
-            gulp.src([destDir+'/js/**/*.js']).pipe(angularFilesort()),
-           {
-               ignorePath: 'dist'
-           }
+            gulp.src([destDir + '/js/**/*.js']).pipe(angularFilesort()),
+            {
+                ignorePath: 'dist'
+            }
         ))
         .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('build', function (cb) {
     //runSequence('clean', ['scripts', 'less', 'static'], 'html', 'rev', 'afterBuild', cb);
-    runSequence('clean',['scripts','static'],'html','bower_components','inject', cb);
+    runSequence('clean', ['scripts', 'static'], 'html', 'bower_components', 'inject', cb);
 });
