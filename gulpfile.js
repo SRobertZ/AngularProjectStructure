@@ -214,6 +214,5 @@ gulp.task('stylus', function (cb) {
 });
 
 gulp.task('build', function (cb) {
-    //runSequence('clean', ['scripts', 'static'], 'stylus', 'html', 'bower_components', 'inject', 'rev', 'afterBuild', cb);
     runSequence('clean', ['scripts', 'static'], 'stylus', 'bower_components', 'html', 'inject', 'rev', 'afterBuild', cb);
 });
