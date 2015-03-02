@@ -29,7 +29,7 @@ expressSrc = path.join(__dirname, destDir),
 
 // Allows gulp <target> --dev to be run for a non-minified output
     isDev = true;// $.util.env.dev === true,
-isProduction = !isDev;
+isProduction = $.util.env.production === true
 
 
 function log(error) {
