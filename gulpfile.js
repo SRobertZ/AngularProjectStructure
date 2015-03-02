@@ -3,12 +3,8 @@
  */
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
-var yuidoc = require("gulp-yuidoc");
-var angularFilesort = require('gulp-angular-filesort'),
-    inject = require('gulp-inject'),
-    bowerFiles = require('main-bower-files');
+var bowerFiles = require('main-bower-files');
 var nib = require('nib');
-var sourcemaps = require('gulp-sourcemaps');
 
 $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files'],
@@ -82,7 +78,6 @@ gulp.task('watch', function (cb) {
     gulp.watch([expressSrc + '/**/*.*'], notifyLiveReload);
     gulp.watch([appDir + '/js/**'], ['js', 'html', 'inject']);
     gulp.watch([appDir + '/index.html'], ['js', 'html', 'inject']);
-    //gulp.watch([appDir + '/tpl/**'], ['tpl']);
     cb();
 });
 
@@ -121,11 +116,11 @@ gulp.task('jsTemplates', function () {
 
 gulp.task('js', function () {
     return gulp.src([appDir + '/js/**/*.js'])
-        .pipe($.if(isProduction, angularFilesort()))
+        .pipe($.if(isProduction, $.angularFilesort()))
         .pipe($.if(isProduction, $.concat('app.min.js')))
-        .pipe($.if(isProduction, sourcemaps.init()))
+        .pipe($.if(isProduction, $.sourcemaps.init()))
         .pipe($.if(isProduction, $.uglify()))
-        .pipe($.if(isProduction, sourcemaps.write()))
+        .pipe($.if(isProduction, $.sourcemaps.write()))
         .pipe(gulp.dest(destDir + '/js/'))
 });
 
@@ -170,15 +165,15 @@ gulp.task('bower_components', function () {
 
 gulp.task('yuidoc', function () {
     return gulp.src([appDir + "/js/**/*.js"])
-        .pipe(yuidoc.parser())
-        .pipe(yuidoc.generator())
+        .pipe($.yuidoc.parser())
+        .pipe($.yuidoc.generator())
         .pipe(gulp.dest('./documentation-output'))
 });
 
 
 gulp.task('inject', function (cb) {
     gulp.src([destDir + '/index.html'])
-        .pipe(inject(gulp.src(bowerFiles({
+        .pipe($.inject(gulp.src(bowerFiles({
                 bowerDirectory: destDir,
                 bowerJson: './bower.json'
             }), {
@@ -188,13 +183,13 @@ gulp.task('inject', function (cb) {
             ignorePath: 'app',
             name: 'bower'
         }))
-        .pipe(inject(gulp.src([destDir + '/css/*.css']), {
+        .pipe($.inject(gulp.src([destDir + '/css/*.css']), {
             name: 'customCss',
             ignorePath: destPathName
         }))
-        .pipe(inject(
+        .pipe($.inject(
             gulp.src([destDir + '/js/**/*.js'])
-                .pipe(angularFilesort())
+                .pipe($.angularFilesort())
             ,
             {
                 ignorePath: destPathName
@@ -206,9 +201,9 @@ gulp.task('inject', function (cb) {
 
 gulp.task('stylus', function (cb) {
     gulp.src([appDir + '/stylus/*.styl'])
-        .pipe(sourcemaps.init())
+        .pipe($.sourcemaps.init())
         .pipe($.stylus({use: nib()}))
-        .pipe(sourcemaps.write('.'))
+        .pipe($.sourcemaps.write('.'))
         .pipe(gulp.dest(destDir + '/css'));
     cb();
 });
