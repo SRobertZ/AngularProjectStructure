@@ -20,7 +20,8 @@ require('colors');
 /** Config variables **/
 var path = require('path'),
     tmpDir = './.tmp',
-    destDir = './dist',
+    destPathName = 'dist',
+    destDir = './' + destPathName,
     appDir = './app',
     bowerDir = appDir + '/bower_components';
 expressSrc = path.join(__dirname, destDir),
@@ -197,13 +198,12 @@ gulp.task('inject', ['html'], function () {
         .pipe(inject(
             gulp.src([destDir + '/js/**/*.js']).pipe(angularFilesort()),
             {
-                ignorePath: 'dist'
+                ignorePath: destPathName
             }
         ))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest(destDir));
 });
 
 gulp.task('build', function (cb) {
-    //runSequence('clean', ['scripts', 'less', 'static'], 'html', 'rev', 'afterBuild', cb);
-    runSequence('clean', ['scripts', 'static'], 'html', 'bower_components', 'inject', cb);
+    runSequence('clean', ['scripts', 'static'], 'html', 'bower_components', 'inject', 'rev','afterBuild', cb);
 });
