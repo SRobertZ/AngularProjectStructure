@@ -7,6 +7,8 @@ var yuidoc = require("gulp-yuidoc");
 var angularFilesort = require('gulp-angular-filesort'),
     inject = require('gulp-inject'),
     bowerFiles = require('main-bower-files');
+var nib = require('nib');
+var sourcemaps = require('gulp-sourcemaps');
 
 $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files'],
@@ -29,8 +31,8 @@ expressSrc = path.join(__dirname, destDir),
     lrPort = 4009,
 
 // Allows gulp <target> --dev to be run for a non-minified output
-    isDev = true;// $.util.env.dev === true,
-isProduction = $.util.env.production === true
+    isProduction = $.util.env.production === true
+isDev = !isProduction;
 
 
 function log(error) {
@@ -112,14 +114,23 @@ gulp.task('afterBuild', function () {
     $.util.log('isProduction:', isProduction);
     $.util.log('----------------'.green);
 });
+gulp.task('jsTemplates', function () {
+    return gulp.src([appDir + '/js/**/*.html'])
+        .pipe(gulp.dest(destDir + '/js/'))
+});
 
 gulp.task('js', function () {
-    return gulp.src([appDir + '/js/**/*.*'])
+    return gulp.src([appDir + '/js/**/*.js'])
+        .pipe($.if(isProduction, angularFilesort()))
+        .pipe($.if(isProduction, $.concat('app.min.js')))
+        .pipe($.if(isProduction, sourcemaps.init()))
+        .pipe($.if(isProduction, $.uglify()))
+        .pipe($.if(isProduction, sourcemaps.write()))
         .pipe(gulp.dest(destDir + '/js/'))
 });
 
 gulp.task('scripts', function (cb) {
-    return runSequence('js', cb);
+    return runSequence('js','jsTemplates', cb);
 });
 
 gulp.task('css', function () {
@@ -133,27 +144,8 @@ gulp.task('img', function () {
 gulp.task('static', ['css', 'img']);
 
 gulp.task('html', function () {
-    var jsFilter = $.filter('**/*.js');
-    var cssFilter = $.filter('**/*.css');
-    var assets = $.useref.assets({searchPath: ['{', tmpDir, ',', appDir, '}'].join('')});
-
-    return gulp.src(appDir + '/*.html')
-        .pipe(assets)
-
-        .pipe(jsFilter)
-        .pipe($.if(isProduction, $.ngmin()))
-        //.pipe($.if(isProduction, $.uglify()))
-        .pipe(jsFilter.restore())
-
-        .pipe(cssFilter)
-        .pipe($.if(isProduction, $.csso()))
-        .pipe(cssFilter.restore())
-
-        .pipe(assets.restore())
-        .pipe($.useref())
+    return gulp.src([appDir + '/index.html'])
         .pipe(gulp.dest(destDir))
-        .pipe($.size())
-        .on('error', log);
 });
 
 gulp.task('rev', function () {
@@ -183,8 +175,9 @@ gulp.task('yuidoc', function () {
         .pipe(gulp.dest('./documentation-output'))
 });
 
-gulp.task('inject', ['html'], function () {
-    return gulp.src([destDir + '/index.html'])
+
+gulp.task('inject', function (cb) {
+    gulp.src([destDir + '/index.html'])
         .pipe(inject(gulp.src(bowerFiles({
                 bowerDirectory: destDir,
                 bowerJson: './bower.json'
@@ -195,15 +188,32 @@ gulp.task('inject', ['html'], function () {
             ignorePath: 'app',
             name: 'bower'
         }))
+        .pipe(inject(gulp.src([destDir + '/css/*.css']), {
+            name: 'customCss',
+            ignorePath: destPathName
+        }))
         .pipe(inject(
-            gulp.src([destDir + '/js/**/*.js']).pipe(angularFilesort()),
+            gulp.src([destDir + '/js/**/*.js'])
+                .pipe(angularFilesort())
+            ,
             {
                 ignorePath: destPathName
             }
         ))
         .pipe(gulp.dest(destDir));
+    cb();
+});
+
+gulp.task('stylus', function (cb) {
+    gulp.src([appDir + '/stylus/*.styl'])
+        .pipe(sourcemaps.init())
+        .pipe($.stylus({use: nib()}))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(destDir + '/css'));
+    cb();
 });
 
 gulp.task('build', function (cb) {
-    runSequence('clean', ['scripts', 'static'], 'html', 'bower_components', 'inject', 'rev','afterBuild', cb);
+    //runSequence('clean', ['scripts', 'static'], 'stylus', 'html', 'bower_components', 'inject', 'rev', 'afterBuild', cb);
+    runSequence('clean', ['scripts', 'static'], 'stylus', 'bower_components', 'html', 'inject', 'rev', 'afterBuild', cb);
 });
